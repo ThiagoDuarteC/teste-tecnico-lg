@@ -128,6 +128,7 @@
                                     </a>
                                 </th>
                             @endforeach
+                                <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +147,11 @@
                                     @endphp
                                     <span class="badge badge-ef {{ $badgeClass }}">{{ $ef }}%</span>
                                 </td>
+                                <td class="text-center">
+                                    <button class="btn-detalhes" data-linha="{{ $item->linha_produto }}">
+                                        <i class="fas fa-eye mr-1"></i> Detalhes
+                                    </button>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -154,6 +160,22 @@
         </section>
     </main>
 
+    <div class="modal fade" id="modalDetalhes" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header p-4">
+                    <h5 class="modal-title" id="modalDetalhesTitle">Detalhes</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <canvas id="chartDetalhes"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="chart-data"
         data-labels='@json($produtividades->pluck('linha_produto'))'
         data-produzidos='@json($produtividades->pluck('total_produzido'))'
@@ -161,7 +183,10 @@
         data-eficiencias='@json($produtividades->pluck('eficiencia'))'
     ></div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>var detalhesUrl = "{{ route('dashboard.detalhes') }}";</script>
     <script src="{{ asset('js/dashboard.js') }}"></script>
 
 </body>

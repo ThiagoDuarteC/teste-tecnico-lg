@@ -40,4 +40,33 @@ class ProdutividadeService
             'eficienciaGeral' => $eficienciaGeral,
         ];
     }
+
+    public function getDetalhesPorLinha(string $linhaProduto, int $mes = 1, int $ano = 2026): array
+    {
+        $detalhes = Produtividade::select(
+                'data_producao',
+                'quantidade_produzida',
+                'quantidade_defeitos'
+            )
+            ->selectRaw('
+                CASE WHEN quantidade_produzida > 0
+                    THEN ROUND(((quantidade_produzida - quantidade_defeitos) / quantidade_produzida) * 100, 2)
+                    ELSE 0
+                END as eficiencia
+            ')
+            ->where('linha_produto', $linhaProduto)
+            ->whereMonth('data_producao', $mes)
+            ->whereYear('data_producao', $ano)
+            ->orderBy('data_producao')
+            ->get();
+
+        return $detalhes->map(function ($item) {
+            return [
+                'data_producao'        => $item->data_producao->format('d/m'),
+                'quantidade_produzida' => $item->quantidade_produzida,
+                'quantidade_defeitos'  => $item->quantidade_defeitos,
+                'eficiencia'           => $item->eficiencia,
+            ];
+        })->toArray();
+    }
 }

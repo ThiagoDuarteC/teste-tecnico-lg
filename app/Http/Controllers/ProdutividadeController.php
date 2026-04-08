@@ -39,4 +39,15 @@ class ProdutividadeController extends Controller
             'order'            => $order,
         ]);
     }
+
+    public function detalhes(Request $request)
+    {
+        $request->validate([
+            'linha_produto' => ['required', 'string', 'in:Geladeira,Máquina de Lavar,TV,Ar-Condicionado'],
+        ]);
+
+        $detalhes = $this->service->getDetalhesPorLinha($request->query('linha_produto'));
+
+        return response()->json($detalhes);
+    }
 }

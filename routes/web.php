@@ -17,3 +17,4 @@ Route::redirect('/', '/dashboard');
 
 
 Route::get('/dashboard', 'ProdutividadeController@index')->name('dashboard');
+Route::get('/dashboard/detalhes', 'ProdutividadeController@detalhes')->name('dashboard.detalhes');

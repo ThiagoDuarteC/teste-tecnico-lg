@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     Chart.defaults.font.size = 12;
     Chart.defaults.color = '#888';
 
-    // Produção vs Defeitos
     new Chart(document.getElementById('chartBarras'), {
         type: 'bar',
         data: {
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Eficiência por Linha
     var cores = eficiencias.map(function (ef) {
         if (ef >= 97) return '#2e7d32';
         if (ef >= 95) return '#1a73e8';
@@ -88,5 +86,81 @@ document.addEventListener('DOMContentLoaded', function () {
                 y: { grid: { display: false } }
             }
         }
+    });
+
+    var chartDetalhes = null;
+
+    document.querySelectorAll('.btn-detalhes').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var linha = this.dataset.linha;
+
+            document.getElementById('modalDetalhesTitle').textContent = 'Detalhes — ' + linha;
+            $('#modalDetalhes').modal('show');
+
+            fetch(detalhesUrl + '?linha_produto=' + encodeURIComponent(linha))
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    var datas = data.map(function (item) { return item.data_producao; });
+                    var produzidas = data.map(function (item) { return item.quantidade_produzida; });
+                    var def = data.map(function (item) { return item.quantidade_defeitos; });
+                    var efic = data.map(function (item) { return item.eficiencia; });
+
+                    if (chartDetalhes) {
+                        chartDetalhes.destroy();
+                    }
+
+                    chartDetalhes = new Chart(document.getElementById('chartDetalhes'), {
+                        type: 'line',
+                        data: {
+                            labels: datas,
+                            datasets: [
+                                {
+                                    label: 'Produzida',
+                                    data: produzidas,
+                                    borderColor: '#1a73e8',
+                                    backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                                    fill: true,
+                                    tension: 0.3,
+                                    pointRadius: 3,
+                                    pointBackgroundColor: '#1a73e8',
+                                },
+                                {
+                                    label: 'Defeitos',
+                                    data: def,
+                                    borderColor: '#e57373',
+                                    backgroundColor: 'rgba(229, 115, 115, 0.1)',
+                                    fill: true,
+                                    tension: 0.3,
+                                    pointRadius: 3,
+                                    pointBackgroundColor: '#e57373',
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        afterBody: function (context) {
+                                            var index = context[0].dataIndex;
+                                            return 'Eficiência: ' + efic[index] + '%';
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { usePointStyle: true, pointStyle: 'circle', padding: 20 }
+                                }
+                            },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#f0f0f0', drawBorder: false }, ticks: { padding: 8 } },
+                                x: { grid: { display: false }, ticks: { maxRotation: 45, font: { size: 10 } } }
+                            }
+                        }
+                    });
+                });
+        });
     });
 });
