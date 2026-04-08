@@ -83,13 +83,14 @@ app/
 │   └── ProdutividadeController.php   # Recebe a request e delega ao Service
 ├── Services/
 │   └── ProdutividadeService.php      # Lógica de negócio e cálculo de eficiência
-└── Produtividade.php                 # Model Eloquent com $fillable e accessor
+└── Produtividade.php                 # Model Eloquent com $fillable e $casts
 ```
 
 ## Funcionalidades
 
-- Cards de resumo: linhas ativas, total produzido, total de defeitos e eficiência geral
-- Gráfico de barras: produção vs defeitos por linha
-- Gráfico horizontal: eficiência por linha com cores condicionais
-- Tabela de detalhamento com badges de eficiência
-- Filtro por linha de produção via dropdown
+- **Cards de resumo:** linhas ativas, total produzido, total de defeitos e eficiência geral
+- **Gráfico de barras:** produção vs defeitos por linha
+- **Gráfico horizontal:** eficiência por linha com cores condicionais (verde, azul, amarelo, vermelho)
+- **Tabela de detalhamento:** badges de eficiência com ordenação clicável por coluna
+- **Filtro por linha de produção:** dropdown no header com submit automático
+- **Modal de detalhes:** gráfico de linha diário (produção x defeitos) por linha, via endpoint JSON
