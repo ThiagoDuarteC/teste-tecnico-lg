@@ -106,10 +106,28 @@
                 <table class="table mb-0">
                     <thead>
                         <tr>
-                            <th>Linha do Produto</th>
-                            <th class="text-right">Qtd. Produzida</th>
-                            <th class="text-right">Qtd. Defeitos</th>
-                            <th class="text-right">Eficiência</th>
+                            @php
+                                $columns = [
+                                    'linha_produto'   => ['label' => 'Linha do Produto', 'align' => ''],
+                                    'total_produzido' => ['label' => 'Qtd. Produzida',   'align' => 'text-right'],
+                                    'total_defeitos'  => ['label' => 'Qtd. Defeitos',    'align' => 'text-right'],
+                                    'eficiencia'      => ['label' => 'Eficiência',       'align' => 'text-right'],
+                                ];
+                            @endphp
+                            @foreach($columns as $field => $col)
+                                @php
+                                    $nextOrder = ($sortBy === $field && $order === 'asc') ? 'desc' : 'asc';
+                                    $icon = $sortBy === $field
+                                        ? ($order === 'asc' ? 'fa-sort-up' : 'fa-sort-down')
+                                        : 'fa-sort';
+                                @endphp
+                                <th class="{{ $col['align'] }}">
+                                    <a href="{{ route('dashboard', array_merge(request()->query(), ['sort_by' => $field, 'order' => $nextOrder])) }}" class="sortable-link {{ $sortBy === $field ? 'active' : '' }}">
+                                        {{ $col['label'] }}
+                                        <i class="fas {{ $icon }} ml-1"></i>
+                                    </a>
+                                </th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>

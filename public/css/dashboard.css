@@ -122,6 +122,22 @@ body {
     background-color: #fafbfd;
 }
 
+/* Sortable */
+.sortable-link {
+    color: #999;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sortable-link:hover {
+    color: #555;
+    text-decoration: none;
+}
+
+.sortable-link.active {
+    color: #1a1a1a;
+}
+
 /* Badges */
 .badge-ef {
     font-size: 0.8rem;

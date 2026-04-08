@@ -18,11 +18,15 @@ class ProdutividadeController extends Controller
     {
         $request->validate([
             'linha_produto' => ['nullable', 'string', 'in:Geladeira,Máquina de Lavar,TV,Ar-Condicionado'],
+            'sort_by'       => ['nullable', 'string', 'in:linha_produto,total_produzido,total_defeitos,eficiencia'],
+            'order'         => ['nullable', 'string', 'in:asc,desc'],
         ]);
 
         $linhaSelecionada = $request->query('linha_produto');
+        $sortBy = $request->query('sort_by', 'linha_produto');
+        $order  = $request->query('order', 'asc');
 
-        $dados = $this->service->getDadosDashboard($linhaSelecionada);
+        $dados = $this->service->getDadosDashboard($linhaSelecionada, $sortBy, $order);
 
         return view('dashboard', [
             'produtividades'   => $dados['resumo'],
@@ -31,6 +35,8 @@ class ProdutividadeController extends Controller
             'totalProduzido'   => $dados['totalProduzido'],
             'totalDefeitos'    => $dados['totalDefeitos'],
             'eficienciaGeral'  => $dados['eficienciaGeral'],
+            'sortBy'           => $sortBy,
+            'order'            => $order,
         ]);
     }
 }

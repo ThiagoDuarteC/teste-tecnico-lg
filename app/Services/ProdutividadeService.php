@@ -3,54 +3,41 @@
 namespace App\Services;
 
 use App\Produtividade;
-use Illuminate\Support\Collection;
 
 class ProdutividadeService
 {
-    public function getDadosDashboard(?string $linhaProduto = null, int $mes = 1, int $ano = 2026): array
+    public function getDadosDashboard(?string $linhaProduto = null, string $sortBy = 'linha_produto', string $order = 'asc', int $mes = 1, int $ano = 2026): array
     {
-        $produtividades = Produtividade::whereMonth('data_producao', $mes)
+        $resumo = Produtividade::selectRaw('
+                linha_produto,
+                SUM(quantidade_produzida) as total_produzido,
+                SUM(quantidade_defeitos) as total_defeitos,
+                CASE WHEN SUM(quantidade_produzida) > 0
+                    THEN ROUND(((SUM(quantidade_produzida) - SUM(quantidade_defeitos)) / SUM(quantidade_produzida)) * 100, 2)
+                    ELSE 0
+                END as eficiencia
+            ')
+            ->whereMonth('data_producao', $mes)
             ->whereYear('data_producao', $ano)
             ->when($linhaProduto, function ($query, $linha) {
                 return $query->where('linha_produto', $linha);
             })
+            ->groupBy('linha_produto')
+            ->orderBy($sortBy, $order)
             ->get();
-
-        $resumo = $this->calcularResumoPorLinha($produtividades);
 
         $totalProduzido = $resumo->sum('total_produzido');
         $totalDefeitos  = $resumo->sum('total_defeitos');
+        $eficienciaGeral = $totalProduzido > 0
+            ? round((($totalProduzido - $totalDefeitos) / $totalProduzido) * 100, 2)
+            : 0;
 
         return [
             'resumo'          => $resumo,
             'linhas'          => Produtividade::distinct()->pluck('linha_produto'),
             'totalProduzido'  => $totalProduzido,
             'totalDefeitos'   => $totalDefeitos,
-            'eficienciaGeral' => $this->calcularEficiencia($totalProduzido, $totalDefeitos),
+            'eficienciaGeral' => $eficienciaGeral,
         ];
-    }
-
-    private function calcularResumoPorLinha(Collection $produtividades): Collection
-    {
-        return $produtividades->groupBy('linha_produto')->map(function ($itens, $linha) {
-            $totalProduzido = $itens->sum('quantidade_produzida');
-            $totalDefeitos = $itens->sum('quantidade_defeitos');
-
-            return (object) [
-                'linha_produto'   => $linha,
-                'total_produzido' => $totalProduzido,
-                'total_defeitos'  => $totalDefeitos,
-                'eficiencia'      => $this->calcularEficiencia($totalProduzido, $totalDefeitos),
-            ];
-        })->values();
-    }
-
-    private function calcularEficiencia(int $totalProduzido, int $totalDefeitos): float
-    {
-        if ($totalProduzido === 0) {
-            return 0;
-        }
-
-        return round((($totalProduzido - $totalDefeitos) / $totalProduzido) * 100, 2);
     }
 }
