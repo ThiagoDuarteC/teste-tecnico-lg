@@ -99,7 +99,7 @@
             </div>
         </section>
 
-        <section class="section-card mb-5">
+        <section id="tabela" class="section-card mb-5">
             <h6 class="section-title">Detalhamento por Linha de Produção</h6>
             <small class="text-muted d-block mb-3">Janeiro 2026 — Planta A</small>
             <div class="table-responsive">
@@ -122,7 +122,7 @@
                                         : 'fa-sort';
                                 @endphp
                                 <th class="{{ $col['align'] }}">
-                                    <a href="{{ route('dashboard', array_merge(request()->query(), ['sort_by' => $field, 'order' => $nextOrder])) }}" class="sortable-link {{ $sortBy === $field ? 'active' : '' }}">
+                                    <a href="{{ route('dashboard', array_merge(request()->query(), ['sort_by' => $field, 'order' => $nextOrder])) }}#tabela" class="sortable-link {{ $sortBy === $field ? 'active' : '' }}">
                                         {{ $col['label'] }}
                                         <i class="fas {{ $icon }} ml-1"></i>
                                     </a>
