@@ -22,22 +22,26 @@ Dashboard para acompanhamento da eficiência de produção da **Planta A**, exib
 git clone https://github.com/ThiagoDuarteC/teste-tecnico-lg.git
 cd teste-tecnico-lg
 
-# 2. Subir os containers
-docker-compose up -d --build
+# 2. Subir os containers, instalar dependências, configurar ambiente e rodar migrations
+make setup
 
-# 3. Instalar dependências
-docker exec -it teste-tecnico-lg-app-1 composer install
-
-# 4. Configurar o ambiente
-docker exec -it teste-tecnico-lg-app-1 cp .env.example .env
-docker exec -it teste-tecnico-lg-app-1 php artisan key:generate
-
-# 5. Executar migrations e seeders
-docker exec -it teste-tecnico-lg-app-1 php artisan migrate --seed
-
-# 6. Acessar a aplicação
+# 3. Acessar a aplicação
 # http://localhost:8000 ou http://localhost:8000/dashboard
 ```
+
+### Comandos úteis do Makefile
+
+| Comando            | Descrição                                      |
+|--------------------|-------------------------------------------------|
+| `make setup`       | Setup completo (build, dependências, migrations)|
+| `make up`          | Subir os containers                             |
+| `make down`        | Parar os containers                             |
+| `make restart`     | Reiniciar os containers                         |
+| `make migrate`     | Rodar migrations                                |
+| `make seed`        | Rodar seeders                                   |
+| `make fresh`       | Recriar banco com migrations e seeders          |
+| `make cache`       | Cachear configurações e rotas                   |
+| `make cache-clear` | Limpar todos os caches                          |
 
 ## Estrutura da Tabela
 
