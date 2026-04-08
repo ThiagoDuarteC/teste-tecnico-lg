@@ -15,9 +15,9 @@ class CreateProdutividadesTable extends Migration
     {
         Schema::create('produtividades', function (Blueprint $table) {
             $table->id();
-            $table->string('linha_produto'); 
-            $table->integer('quantidade_produzida');
-            $table->integer('quantidade_defeitos');
+            $table->string('linha_produto')->index();
+            $table->unsignedInteger('quantidade_produzida');
+            $table->unsignedInteger('quantidade_defeitos');
             $table->date('data_producao');
             $table->timestamps();
         });

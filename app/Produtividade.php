@@ -19,8 +19,8 @@ class Produtividade extends Model
 
     public function getEficienciaAttribute()
     {
-        if ($this->quantidade_defeitos == 0) {
-            return 100;
+        if ($this->quantidade_produzida == 0) {
+            return 0;
         }
 
         $eficiencia = (($this->quantidade_produzida - $this->quantidade_defeitos) / $this->quantidade_produzida) * 100;

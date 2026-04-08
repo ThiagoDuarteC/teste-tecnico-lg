@@ -7,10 +7,10 @@ use Illuminate\Support\Collection;
 
 class ProdutividadeService
 {
-    public function getDadosDashboard(?string $linhaProduto = null): array
+    public function getDadosDashboard(?string $linhaProduto = null, int $mes = 1, int $ano = 2026): array
     {
-        $produtividades = Produtividade::whereMonth('data_producao', 1)
-            ->whereYear('data_producao', 2026)
+        $produtividades = Produtividade::whereMonth('data_producao', $mes)
+            ->whereYear('data_producao', $ano)
             ->when($linhaProduto, function ($query, $linha) {
                 return $query->where('linha_produto', $linha);
             })
