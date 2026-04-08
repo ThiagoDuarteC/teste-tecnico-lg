@@ -28,6 +28,9 @@ class ProdutividadeController extends Controller
             'produtividades'   => $dados['resumo'],
             'linhas'           => $dados['linhas'],
             'linhaSelecionada' => $linhaSelecionada,
+            'totalProduzido'   => $dados['totalProduzido'],
+            'totalDefeitos'    => $dados['totalDefeitos'],
+            'eficienciaGeral'  => $dados['eficienciaGeral'],
         ]);
     }
 }

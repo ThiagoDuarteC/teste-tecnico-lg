@@ -16,9 +16,17 @@ class ProdutividadeService
             })
             ->get();
 
+        $resumo = $this->calcularResumoPorLinha($produtividades);
+
+        $totalProduzido = $resumo->sum('total_produzido');
+        $totalDefeitos  = $resumo->sum('total_defeitos');
+
         return [
-            'resumo' => $this->calcularResumoPorLinha($produtividades),
-            'linhas' => Produtividade::distinct()->pluck('linha_produto'),
+            'resumo'          => $resumo,
+            'linhas'          => Produtividade::distinct()->pluck('linha_produto'),
+            'totalProduzido'  => $totalProduzido,
+            'totalDefeitos'   => $totalDefeitos,
+            'eficienciaGeral' => $this->calcularEficiencia($totalProduzido, $totalDefeitos),
         ];
     }
 
